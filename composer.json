@@ -1,0 +1,19 @@
+{
+    "name": "camilocontreras/cosmetic-gallery",
+    "description": "Before and after gallery pictures",
+    "type": "project",
+    "license": "GLP",
+    "autoload": {
+        "psr-4": {
+            "Inc\\": "./inc"
+        }
+    },
+    "authors": [
+        {
+            "name": "ccontreras",
+            "email": "camilo.contreras@intelindev.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
