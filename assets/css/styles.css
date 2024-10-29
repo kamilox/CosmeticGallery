@@ -51,8 +51,6 @@ div#category_image_preview {
     font-size: 25px;
     text-align: center;
     margin: 20px 10px;
-    font-weight: 400;
-    text-shadow: #333333 1px 0 2px;
 }
 .parent-category > ul.child-categories{
     list-style: none;
@@ -82,6 +80,19 @@ div#category_image_preview {
     background-size: contain !important;
 }
 /*procedures template*/
+.gallery-container > h1,
+.gallery-container > .single-patient-row > div > h1,
+.parent-category > h2,
+.gallery-images-item-top > div > h2,
+.gallery-info-patient > div > h2,
+.gallery-info-procedure > div > h2{
+    font-weight: 100;
+    text-shadow: #333333 1px 0 1px;
+}
+.gallery-container > h1,
+.gallery-container > .single-patient-row > div > h1{
+    text-align: center;
+}
 .gallery-container > h1{
     text-align: center;
     margin: 50px 20px;
@@ -99,6 +110,7 @@ div#category_image_preview {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin: 10px 0;
 }
 .procedure-category-image {
     width: 50%;
@@ -176,7 +188,7 @@ div#category_image_preview {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 65%;
+    width: 100%;
     margin: auto;
     padding: 20px 0;
 }
@@ -187,6 +199,10 @@ div#category_image_preview {
     justify-content: center;
     align-items: center;
 }
+.single-patient-title > h1 {
+    font-size: 1.6em;
+}
+
 .gallery-images-top-item {
     width: 99%;
     border: solid 10px #333333;
@@ -221,6 +237,18 @@ div#category_image_preview {
     border-radius: 10px;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.1);
 }
+.single-patient-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 50px;
+}
+.single-patient-row > div{
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .gallery-info-patient-item {
     display: flex;
     flex-direction: row;
@@ -245,9 +273,12 @@ div#category_image_preview {
     justify-content: space-between;
 }
 .gallery-info-procedure > .gallery-info-patient-item > label,
-.contact-us {
+.contact-us,
+.previous-post > a,
+.next-post > a {
     text-transform: uppercase;
     background-color: #333333;
+    border: solid 1px #333333;
     border-radius: 10rem;
     padding: 6px 20px;
     font-size: 18px;
@@ -255,7 +286,19 @@ div#category_image_preview {
     color: #ffffff;
     margin: 10px 0;
     width: fit-content;
+    transition: background-color .7s, color .7s ;
 }
+
+.gallery-info-procedure > .gallery-info-patient-item > label:hover,
+.contact-us:hover,
+.previous-post > a:hover,
+.next-post > a:hover{
+    background-color: #ffffff;
+    color: #333333;
+    transition: background-color .7s, color .7s ;
+}
+
+
 .gallery-info-procedure > .gallery-info-patient-item > label > a,
 .contact-us > a{
     color: #ffffff;
@@ -276,7 +319,8 @@ div#category_image_preview {
     margin: 10px 0;
 }
 .related-patients{
-    width: 24%;
+    width: 23%;
+    margin: 1%;
 }
 .related-patients > a {
     display: flex;
@@ -367,5 +411,20 @@ div#category_image_preview {
     .carousel-item {
         width: 49%;
         margin: 0 .5%;
+    }
+    .gallery-info > .gallery-info-patient > .gallery-info-patient-item > label,
+    .gallery-info > .gallery-info-patient > .gallery-info-patient-item > .gallery-info-patient-details{
+        font-size: 14px;
+    }
+    .gallery-related > .gallery-related-items > .related-patients{
+        width: 48%;
+    }
+    .related-patients > a > span,
+    .gallery-info-procedure > .gallery-info-patient-item > label,
+    .contact-us,
+    .previous-post > a,
+    .next-post > a {
+        font-size: 12px;
+        line-height: 1.2;
     }
 }

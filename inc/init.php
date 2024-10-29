@@ -19,6 +19,8 @@ final class Init{
             Gallery\GalleryCustomFieldsController::class,
             Gallery\SaveGalleryCustomPostTypeControler::class,
             Gallery\GalleryTableController::class,
+            
+            GallerySettings\GallerySettingsController::class,
 
             Procedures\ProceduresController::class,
             Procedures\TaxonomyImageController::class,

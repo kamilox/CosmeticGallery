@@ -41,13 +41,42 @@ function get_term_ancestors_with_links($term_id) {
     }
     return implode(', ', $ancestor_links);
 }
+$next_post = get_adjacent_post(false, '', false); // Siguiente post
+$prev_post = get_adjacent_post(false, '', true);  // Post anterior
 
-// Array para almacenar los IDs de las categorías
 
 ?>
 
 <div class="gallery-container">
-    <h1> Case #<?php the_title(); ?></h1>
+    <div class="single-patient-row">
+        <div class="previous-post">
+            <?php if ($prev_post) {
+                $prev_post_id = $prev_post->ID;
+                $prev_post_images = get_post_meta($prev_post_id, 'images', true);
+
+                if (is_array($prev_post_images) && count($prev_post_images) > 1) {
+                    // Mostrar enlace al post anterior solo si tiene más de una imagen
+                    previous_post_link('%link', 'Previous');
+                }
+            }
+            ?>
+        </div>
+        <div class="single-patient-title "><h1> <?php if(!empty($_GET['procedure'])){echo $_GET['procedure'];} ?><br> Case #: <?php the_title() ?></h1></div>
+        <div class="next-post">
+            <?php 
+            if ($next_post) {
+                $next_post_id = $next_post->ID;
+                $next_post_images = get_post_meta($next_post_id, 'images', true);
+
+                if (is_array($next_post_images) && count($next_post_images) > 1) {
+                    // Mostrar enlace al siguiente post solo si tiene más de una imagen
+                    next_post_link('%link', 'Next');
+                }
+            }
+            ?>
+        </div>
+    </div>
+    
     <div class="gallery-content">
         <div class="gallery-images">
             <div class="gallery-images-top">
@@ -216,7 +245,7 @@ function get_term_ancestors_with_links($term_id) {
                                             // Obtener el primer post del término hermano
                                             $args = array(
                                                 'post_type' => 'patients', // Reemplaza 'custom_post_type' por tu custom post type
-                                                'posts_per_page' => 1, // Obtener solo el primer post
+                                                'posts_per_page' => 4, // Obtener solo el primer post
                                                 'tax_query' => array(
                                                     array(
                                                         'taxonomy' => $taxonomy,
@@ -227,21 +256,27 @@ function get_term_ancestors_with_links($term_id) {
                                             );
                                             $sibling_posts = get_posts($args);
 
+
                                             if ( !empty($sibling_posts) ) {
-                                                $first_post = $sibling_posts[0];
-                                                $images_post = get_post_meta($first_post->ID, 'images', true);
-                                            
-                                                echo '<div class="related-patients">';
-                                                    echo '<a href="'.get_the_permalink($first_post->ID).'">';
-                                                        for ($i=0; $i < 2; $i++) { 
-                                                            $image_url = wp_get_attachment_image_src( $images_post[$i] , 'full' );
-                                                            echo '<div class="related-patients-image">';
-                                                                echo '<img src="'.$image_url[0].'">';
-                                                            echo '</div>';
-                                                        }
-                                                        echo '<span>'.$sibling->name.'</span>';
-                                                    echo '</a>';
-                                                echo '</div>';
+                                                foreach($sibling_posts as $key => $sibling_post ){
+                                                    $images_post = get_post_meta($sibling_post->ID, 'images', true);
+                                                    if(count($images_post) > 1){
+                                                        echo '<div class="related-patients">';
+                                                            echo '<a href="'.get_the_permalink($sibling_post->ID).'">';
+                                                                for ($i=0; $i < 2; $i++) { 
+                                                                    $image_url = wp_get_attachment_image_src( $images_post[$i] , 'full' );
+                                                                    echo '<div class="related-patients-image">';
+                                                                        echo '<img src="'.$image_url[0].'">';
+                                                                    echo '</div>';
+                                                                }
+                                                                echo '<span>'.$sibling->name.'</span>';
+                                                            echo '</a>';
+                                                        echo '</div>';
+                                                    }
+                                                    
+                                                }
+                                               
+                                               
                                                 //echo '<p>Primer post del término hermano: <a href="' . get_permalink() . '">' . get_the_title($first_post->ID) . '</a></p>';
                                             } 
                                         }
