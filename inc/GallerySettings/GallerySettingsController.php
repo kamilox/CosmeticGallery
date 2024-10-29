@@ -13,6 +13,68 @@ use WP_Query;
 
 class GallerySettingsController extends BaseController
 {
+    /*
+
+
+
+
+titles[
+    font-size
+    font-color
+    font-weight
+]
+gallery-item[
+    border-color
+    border-weight
+    border-radius
+    title[
+        font[
+            color,
+            size,
+            weight
+        ]
+    ]
+    image[
+        logo
+    ]
+    button[
+        border-color
+        border-weight
+        border-radius
+        background_color
+        hover[
+            border-color
+            border-weight
+            border-radius
+            background_color
+        ]
+        font[
+            color,
+            size,
+            weight
+        ]
+    ]
+]
+patient[
+    top-buttons[
+        border-color
+        border-weight
+        border-radius
+        background_color
+        hover[
+            border-color
+            border-weight
+            border-radius
+            background_color
+        ]
+        font[
+            color,
+            size,
+            weight
+        ]
+    ]
+]
+*/
     private $fields = [
         
         'border_color' => [
