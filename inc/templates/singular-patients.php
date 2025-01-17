@@ -3,7 +3,17 @@
 Template Name: Single Patients
 */
 get_header();
-global $wp, $post;
+global $wp, $wpdb, $post, $wp_query;
+
+// Obtener la parte relativa de la URL
+$url_parts = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
+
+// Supongamos que el último segmento es el slug del post
+$post_slug = end($url_parts);
+
+// Buscar el post por slug
+$post = get_page_by_path($post_slug, OBJECT, ['patients']);
+
 $post_id = $post->ID;
 
 $name = get_post_meta($post_id, 'name', true);
@@ -20,16 +30,7 @@ $contact_us = get_post_meta( 'contact_us', true);
 $taxonomy = 'procedures';
 $terms = wp_get_post_terms($post_id, $taxonomy);
 $term_id = get_queried_object_id();
-function JoinImages($images) {
-    $imagesJoined = [];
-    for ($i = 0; $i < count($images); $i += 2) {
-        $imagesJoined[] = [
-            $images[$i],
-            isset($images[$i + 1]) ? $images[$i + 1] : null
-        ];
-    }
-    return $imagesJoined;
-}
+
 
 function get_term_ancestors_with_links($term_id) {
     $taxonomy = 'procedures';
@@ -82,12 +83,11 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
             <div class="gallery-images-top">
                 <?php
                     if(!empty($images)){
-                        foreach ($images as $key => $image) {
-                            $image_url = wp_get_attachment_url($image);
+                        foreach (explode(',',$images) as $key => $image) {
                             if($key < 2){
                                 echo '<div class="gallery-images-item-top">';
                                     echo '<div class="gallery-images-top-item">';
-                                        echo '<img src="'.$image_url.'">';
+                                        echo '<img src="'.$image.'">';
                                     echo '</div>';
                                     if($key  == 0){
                                         echo '<div><h2>'. esc_html__( 'Before').'</h2></div>';
@@ -107,16 +107,34 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
                     <button class="prev">&#10094;</button>
                         <div class="carousel-inner">
                             <?php
+                            if (!is_array($images)) {
+                                $images = json_decode($images, true);
+                                if (!is_array($images)) {
+                                    $images = [];
+                                }
+                            }
+
+                            function JoinImages($images) {
+                                $imagesJoined = [];
+                                for ($i = 0; $i < count($images); $i += 2) {
+                                    $imagesJoined[] = [
+                                        $images[$i],
+                                        isset($images[$i + 1]) ? $images[$i + 1] : null
+                                    ];
+                                }
+                                return $imagesJoined;
+                            }
                             $imagesJoined = JoinImages($images);
+
                             $groupedImages = array_chunk($imagesJoined , 4);
                             foreach ($groupedImages as $key => $imagesPar) {
                                 foreach ($imagesPar as $key => $imagesParItem) {
                                         echo '<div class="carousel-item">';
                                         foreach ($imagesParItem as $key => $item) {
-                                            $image_url = wp_get_attachment_url( $item);
-                                            if ($image_url) {
+                                            
+                                            if ($item) {
                                                 echo '<div class="gallery-images-carousel-par-item">';
-                                                    echo ' <img src="' . esc_url($image_url) . '" alt="">';
+                                                    echo ' <img src="' . esc_url($item) . '" alt="">';
                                                 echo '</div>';
                                             }
                                         }
@@ -222,7 +240,6 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
                     foreach ($terms as $key => $term) {
                         if($key < 1){
 
-                       
                             // Si el término tiene un término padre (parent != 0)
                             if ($term->parent != 0) {
                                 $parent_term = get_term($term->parent, $taxonomy); // Obtener el término padre
@@ -256,18 +273,20 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
                                             );
                                             $sibling_posts = get_posts($args);
 
-
                                             if ( !empty($sibling_posts) ) {
                                                 foreach($sibling_posts as $key => $sibling_post ){
-                                                    $images_post = get_post_meta($sibling_post->ID, 'images', true);
+                                                    $images_post = explode(',' , get_post_meta($sibling_post->ID, 'images', true));
+                                                
                                                     if(count($images_post) > 1){
                                                         echo '<div class="related-patients">';
                                                             echo '<a href="'.get_the_permalink($sibling_post->ID).'">';
-                                                                for ($i=0; $i < 2; $i++) { 
-                                                                    $image_url = wp_get_attachment_image_src( $images_post[$i] , 'full' );
-                                                                    echo '<div class="related-patients-image">';
-                                                                        echo '<img src="'.$image_url[0].'">';
-                                                                    echo '</div>';
+                                                                foreach($images_post as $key => $image_post) { 
+                                                                    if($key < 2 ){
+                                                                        echo '<div class="related-patients-image">';
+                                                                            echo '<img src="'.$image_post.'">';
+                                                                        echo '</div>';
+                                                                    }
+                                                                    
                                                                 }
                                                                 echo '<span>'.$sibling->name.'</span>';
                                                             echo '</a>';
@@ -275,18 +294,13 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
                                                     }
                                                     
                                                 }
-                                               
-                                               
-                                                //echo '<p>Primer post del término hermano: <a href="' . get_permalink() . '">' . get_the_title($first_post->ID) . '</a></p>';
                                             } 
                                         }
                                     }
                             
                                 }
                                 
-                            } else {
-                                echo '<p>Este término no tiene un padre, por lo tanto, no tiene hermanos.</p>';
-                            }
+                            } 
                         }
                     }
                 }

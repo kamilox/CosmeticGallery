@@ -27,8 +27,9 @@ final class Init{
 
             Surgeons\SurgeonsCustomPostTypesController::class,
             Surgeons\SurgeonsCustomFieldsController::class,
-            Surgeons\SaveSurgeonsCustomPostTypeControler::class
+            Surgeons\SaveSurgeonsCustomPostTypeControler::class,
 
+            Templates\TemplatesController::class
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Single Patients
+Template Name: Procedures Patients
 */
 get_header();
 
@@ -12,13 +12,19 @@ $base_controller = new \Inc\Base\BaseController();
 // Obtener la URL del logo del sitio
 $site_logo_url = $base_controller->get_site_logo_url();
 
-$category = get_queried_object();
 $category_slug = '';
+$category_name = '';
 
-if ($category && isset($category->slug)) {
-    $category_name = $category->name;  // Nombre de la categoría
-    $category_id = $category->term_id;  // ID de la categoría
-    $category_slug = $category->slug;  // Slug de la categoría
+// Obtener el segmento de la URL después de "procedures/"
+$url_parts = explode('/', trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/'));
+$key = array_search('procedures', $url_parts);
+
+if ($key !== false && isset($url_parts[$key + 1])) {
+    $category_slug = sanitize_title($url_parts[$key + 1]); // Slug de la categoría
+    $term = get_term_by('slug', $category_slug, 'procedures'); // Buscar el término
+    if ($term) {
+        $category_name = $term->name; // Nombre de la categoría
+    }
 }
 
 $args = array(
@@ -37,79 +43,52 @@ $args = array(
 );
 
 $posts = get_posts($args);
+
 ?>
 <main id="content" class="site-main">
     <div class="gallery-container">
-        <h1><?php echo esc_html($category_name); ?></h1>
+        <h1>Procedures <?php echo esc_html($category_name); ?></h1>
         <div class="gallery-content">
-<?php
-if ($posts) {
-    echo '<div class="procedure-categories-wrapper">';
-    foreach ($posts as $post) {
-        echo '<div class="procedure-category">';
-        $title = get_the_title($post->ID);
-        $images = get_post_meta($post->ID, 'images', true);
-        $link = get_permalink($post->ID);
-        $logo = get_post_meta($post->ID, 'logo', true);
+            <?php
+            if ($posts) {
+                echo '<div class="procedure-categories-wrapper">';
+                foreach ($posts as $post) {
+                    echo '<div class="procedure-category">';
+                    $title = get_the_title($post->ID);
+                    $images = get_post_meta($post->ID, 'images', true);
+                    $link = get_permalink($post->ID);
+                    $logo = get_post_meta($post->ID, 'logo', true);
 
-        // Check if $images is an array and contains at least two elements
-        if (is_array($images) && count($images) >= 2) {
-            for ($i = 0; $i < 2; $i++) {
-                $image_url = wp_get_attachment_image_src($images[$i], 'full');
-
-                // Check if the image URL is valid
-                if ($image_url) {
-                    echo '<div class="procedure-category-image" style="background-image:url(' . $image_url[0] . ')">';
-                    if ($i == 0) {
-                        echo '<span>Before</span>';
-                        echo '<div class="procedure-category-image-post-link">';
-                        echo '<a href="' . add_query_arg('procedure', $category_name, $link) . '">';
-                        echo '<span class="dashicons dashicons-visibility"></span>';
-                        echo 'Open Case Details';
-                        echo '</a>';
-                        echo '</div>';
-                    } else {
-                        echo '<span>After</span>';
-                    }
-
-                    echo '<div class="procedure-category-image-site-logo">';
-                    if ($logo) {
-                        switch ($variable) {
-                            case '0':
-                                echo 'no logo ';
-                                break;
-                            case '1':
-                                echo 'site logo';
-                                break;
-                            case '2':
-                                echo 'user logo';
-                                break;
+                    foreach (explode(',', $images) as $key => $image) {
+                       if($key < 2){
+                        echo '<div class="procedure-category-image" style="background-image:url(' . $image . ')">';
+                        if ($key == 0) {
+                            echo '<span>Before</span>';
+                            echo '<div class="procedure-category-image-post-link">';
+                            echo '<a href="' .  $link . '">';
+                            echo '<span class="dashicons dashicons-visibility"></span>';
+                            echo 'Open Case Details #: '.$title ;
+                            echo '</a>';
+                            echo '</div>';
+                        } else {
+                            echo '<span>After</span>';
                         }
-                    }
-                    echo '</div>'; // Close .procedure-category-image-site-logo
-                    echo '</div>'; // Close .procedure-category-image
-                }
-            }
-        } else {
-            echo '<div class="procedure-category-image" style="background-image:url(' . $site_logo_url . ')">';
-            echo '<span>Before</span>';
-            echo '<div class="procedure-category-image-post-link">';
-            echo '<a href="' . $link . '">';
-            echo '<span class="dashicons dashicons-visibility"></span>';
-            echo 'Open Case Details';
-            echo '</a>';
-            echo '</div>';
-            echo '</div>';
-            echo '<div class="procedure-category-image" style="background-image:url(' . $site_logo_url . ')">';
-            echo '<span>After</span>';
-            echo '</div>';
-        }
 
-        echo '</div>'; // Close .procedure-category
-    }
-    echo '</div>'; // Close .procedure-categories-wrapper
-}
-?>
+                        echo '<div class="procedure-category-image-site-logo">';
+                        if ($logo) {
+                            echo 'Logo: ' . esc_html($logo);
+                        }
+                        echo '</div>'; // Close .procedure-category-image-site-logo
+                        echo '</div>'; // Close .procedure-category-image
+                       }
+                    }
+
+                    
+                    echo '</div>'; // Close .procedure-category
+                }
+                echo '</div>'; // Close .procedure-categories-wrapper
+            }
+            ?>
         </div><!-- gallery-content-->
     </div><!-- gallery-container-->
 </main>

@@ -19,10 +19,6 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
 */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    return; // Exit if accessed directly
-}
-
 if ( ! defined( 'ABSPATH' ) ) { die( 'Invalid request.' ); }
 
 if(file_exists(dirname(__FILE__).'/vendor/autoload.php')){

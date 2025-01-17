@@ -13,7 +13,7 @@ $parent_categories = get_terms(array(
 ?>
 <main id="content" class="site-main">
     <div class="gallery-container">
-        <h1>Gallery</h1>
+        <h1>Gallery 1</h1>
         <div class="gallery-content">
             <?php
 
@@ -32,18 +32,9 @@ $parent_categories = get_terms(array(
                             echo '<div class="parent-category-image" style="background-image:url('.$image_url.')" >';
                             echo '</div>';
                         }else{
-                            if ( has_custom_logo() ) {
-                                $custom_logo_id = get_custom_logo();
-                                $image = wp_get_attachment_image_src( $custom_logo_id , 'full' );
-                                echo '<div class="parent-category-image" style="background-image:url('.esc_url( $image[0] ) .')" >';
-                                echo '</div>';
-                            }else{
-                                echo '<div class="parent-category-image parent-category-image-default"  style="background-image:url('.home_url().'/wp-content/plugins/CosmeticGallery/assets/images/basic-category.webp)">';
+                            echo '<div class="parent-category-image parent-category-image-default"  style="background-image:url('.home_url().'/wp-content/plugins/CosmeticGallery/assets/images/basic-category.webp)">';
                                     
-                                echo '</div>';
-                            }
-
-                            
+                            echo '</div>';
                         }
 
                         // Mostrar el nombre de la categoría padre
