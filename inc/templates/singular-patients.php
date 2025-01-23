@@ -83,22 +83,42 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
             <div class="gallery-images-top">
                 <?php
                     if(!empty($images)){
-                        foreach (explode(',',$images) as $key => $image) {
-                            if($key < 2){
-                                echo '<div class="gallery-images-item-top">';
-                                    echo '<div class="gallery-images-top-item">';
-                                        echo '<img src="'.$image.'">';
-                                    echo '</div>';
-                                    if($key  == 0){
-                                        echo '<div><h2>'. esc_html__( 'Before').'</h2></div>';
-                                    }
-                                    if($key  == 1){
-                                        echo '<div><h2>'. esc_html__( 'After').'</h2></div>';
-                                    }
-                                echo '</div>';
-                            }
-                            
-                        }
+						if(!is_array($images)){
+							foreach (explode(',',$images) as $key => $image) {
+								if($key < 2){
+									echo '<div class="gallery-images-item-top">';
+										echo '<div class="gallery-images-top-item">';
+											echo '<img src="'.$image.'">';
+										echo '</div>';
+										if($key  == 0){
+											echo '<div><h2>'. esc_html__( 'Before').'</h2></div>';
+										}
+										if($key  == 1){
+											echo '<div><h2>'. esc_html__( 'After').'</h2></div>';
+										}
+									echo '</div>';
+								}
+
+							}
+						}else{
+							foreach ($images as $key => $image) {
+								if($key < 2){
+									echo '<div class="gallery-images-item-top">';
+										echo '<div class="gallery-images-top-item">';
+											echo '<img src="'.$image.'">';
+										echo '</div>';
+										if($key  == 0){
+											echo '<div><h2>'. esc_html__( 'Before').'</h2></div>';
+										}
+										if($key  == 1){
+											echo '<div><h2>'. esc_html__( 'After').'</h2></div>';
+										}
+									echo '</div>';
+								}
+
+							}
+						}
+                        
                     }
                 ?>
             </div>
@@ -243,9 +263,7 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
                             // Si el término tiene un término padre (parent != 0)
                             if ($term->parent != 0) {
                                 $parent_term = get_term($term->parent, $taxonomy); // Obtener el término padre
-
                                 echo '<h3>Other ' . $parent_term->name . ' Procedures</h3>';
-                
                                 // Obtener los términos hermanos (otros hijos del mismo padre)
                                 $sibling_terms = get_terms(array(
                                     'taxonomy' => $taxonomy,
@@ -275,23 +293,47 @@ $prev_post = get_adjacent_post(false, '', true);  // Post anterior
 
                                             if ( !empty($sibling_posts) ) {
                                                 foreach($sibling_posts as $key => $sibling_post ){
-                                                    $images_post = explode(',' , get_post_meta($sibling_post->ID, 'images', true));
+														$images_post =  get_post_meta($sibling_post->ID, 'images', true);
+														if(!is_array($images_post)){
+															$images_array = explode(',', $images_post);
+															if(count($images_array) > 1){
+																echo '<div class="related-patients">';
+																	echo '<a href="'.get_the_permalink($sibling_post->ID).'">';
+																		foreach($images_array as $key => $image_post) { 
+																			if($key < 2 ){
+																				echo '<div class="related-patients-image">';
+																					echo '<img src="'.$image_post.'">';
+																				echo '</div>';
+																			}
+
+																		}
+																		echo '<span>'.$sibling->name.'</span>';
+																	echo '</a>';
+																echo '</div>';
+															}
+														}else{
+															if(count($images_post) > 1){
+																echo '<div class="related-patients">';
+																	echo '<a href="'.get_the_permalink($sibling_post->ID).'">';
+																		foreach($images_post as $key => $image_post) { 
+																			if($key < 2 ){
+																				echo '<div class="related-patients-image">';
+																					echo '<img src="'.$image_post.'">';
+																				echo '</div>';
+																			}
+
+																		}
+																		echo '<span>'.$sibling->name.'</span>';
+																	echo '</a>';
+																echo '</div>';
+															}
+														}
+														
+														
+													
+                                                    
                                                 
-                                                    if(count($images_post) > 1){
-                                                        echo '<div class="related-patients">';
-                                                            echo '<a href="'.get_the_permalink($sibling_post->ID).'">';
-                                                                foreach($images_post as $key => $image_post) { 
-                                                                    if($key < 2 ){
-                                                                        echo '<div class="related-patients-image">';
-                                                                            echo '<img src="'.$image_post.'">';
-                                                                        echo '</div>';
-                                                                    }
-                                                                    
-                                                                }
-                                                                echo '<span>'.$sibling->name.'</span>';
-                                                            echo '</a>';
-                                                        echo '</div>';
-                                                    }
+                                                    
                                                     
                                                 }
                                             } 

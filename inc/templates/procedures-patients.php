@@ -58,8 +58,12 @@ $posts = get_posts($args);
                     $images = get_post_meta($post->ID, 'images', true);
                     $link = get_permalink($post->ID);
                     $logo = get_post_meta($post->ID, 'logo', true);
-
-                    foreach (explode(',', $images) as $key => $image) {
+					if(!is_array($images)){
+						$all_images = explode(',', $images);
+					}else{
+						$all_images = $images;
+					}
+                    foreach ($all_images as $key => $image) {
                        if($key < 2){
                         echo '<div class="procedure-category-image" style="background-image:url(' . $image . ')">';
                         if ($key == 0) {

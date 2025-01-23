@@ -55,6 +55,7 @@ class GalleryCustomPostTypeControler extends BaseController
             'description' => __('Post images types', 'textdomain'),
             'show_in_menu' => 'cosmetic-gallery', 
             'rewrite' => array('slug' => 'patients'),
+			'capability_type' => 'post',
             'has_archive' => true,
             'menu_position' => 5,
             'supports' => array(

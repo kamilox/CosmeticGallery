@@ -2,6 +2,8 @@
 
 main#content{
     width: 100%;
+	max-width: 1440px;
+	margin: auto;
 }
 
 ul#gallery_preview {
@@ -173,6 +175,8 @@ div#category_image_preview {
 /*Single patient template*/
 .gallery-container {
     width: 100%;
+	max-width: 1440px;
+	margin: auto;
 }
 .gallery-content {
     display: flex;
@@ -294,11 +298,13 @@ div#category_image_preview {
 .previous-post > a:hover,
 .next-post > a:hover{
     background-color: #ffffff;
-    color: #333333;
+    color: #333333 !important;
     transition: background-color .7s, color .7s ;
 }
 
 
+.gallery-info-patient-item:hover > label > a,
+.gallery-info-patient-item:hover > label > a > span,
 .gallery-info-procedure > .gallery-info-patient-item > label > a,
 .contact-us > a{
     color: #ffffff;

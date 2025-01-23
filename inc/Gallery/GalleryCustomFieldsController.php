@@ -112,6 +112,7 @@ class GalleryCustomFieldsController extends BaseController
         $id = get_the_ID();	
          // Obtener las imágenes almacenadas
          $images = get_post_meta($post->ID, 'images', true);
+		
 
         $case = '<div class="surgeon-item-container">';
             $case .= '<div class="surgeon-item-title">';
@@ -121,12 +122,12 @@ class GalleryCustomFieldsController extends BaseController
 
             $case .= '<div class="custom-fields-input">';
                 $case .= '<ul id="gallery_preview" class="sortable">';
-                    if (!empty($images)) {
-                        foreach ($images as $image_id) {
-                            $image_url = wp_get_attachment_image_src($image_id, 'thumbnail');
+                    if (!empty($images) && !is_array($images)) {
+                        foreach (explode(',', $images) as $image_id) {
+                          
                             $case .= '<li data-id="' . esc_attr($image_id) . '">';
-                                if((is_array($image_url) && !empty($image_url)) ){
-                                    $case .= '<img src="' . esc_attr($image_url[0]) . '" />';
+                                if($image_id){
+                                    $case .= '<img src="' . esc_attr($image_id) . '" />';
                                 }else{
                                     $case .= '<img src="" />';
                                 }
@@ -134,11 +135,29 @@ class GalleryCustomFieldsController extends BaseController
                                 $case .= '<button class="remove-image button">Remove</button>';
                             $case .= '</li>';
                         }
-                    }
+                    }elseif(!empty($images) && is_array($images)){
+						foreach ($images as $image_id) {
+                            $case .= '<li data-id="' . esc_attr($image_id) . '">';
+                                if($image_id){
+                                    $case .= '<img src="' . esc_attr($image_id) . '" />';
+                                }else{
+                                    $case .= '<img src="" />';
+                                }
+                               
+                                $case .= '<button class="remove-image button">Remove</button>';
+                            $case .= '</li>';
+                        }
+					}
+			
                 $case .= '</ul>';
                 $case .='<input type="button" class="button upload_gallery_button" value="Select Images">';
                 if($images){
-                    $case .= '<input type="hidden" id="images" name="images" value="'.(implode("," , $images)).'" />';
+					if(is_array($images)){
+						$case .= '<input type="hidden" id="images" name="images" value="'.(implode("," , $images)).'" />';
+					}else{
+						$case .= '<input type="hidden" id="images" name="images" value="'.($images).'" />';
+					}
+                    
                 }else{
                     $case .= '<input type="hidden" id="images" name="images" value="" />';
                 }
